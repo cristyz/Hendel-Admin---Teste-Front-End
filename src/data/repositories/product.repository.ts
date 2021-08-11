@@ -4,7 +4,7 @@ import { Product, ProductCollectionItem } from '../../domain/models/product.mode
 import { RelatedProduct } from '../../domain/models/related-product.model'
 import { ProductRepositoty } from '../../domain/repositories/product.repository'
 import { httpClient } from '../config/http-client'
-import { productCollectionMapper } from '../mappers/product.mapper'
+import { productCollectionMapper, productMapper } from '../mappers/product.mapper'
 
 export class IProductDepository implements ProductRepositoty {
   async getProducts(page: number = 1, filter: ProductFilter): Promise<Collection<ProductCollectionItem>> {
@@ -28,8 +28,10 @@ export class IProductDepository implements ProductRepositoty {
     return productCollectionMapper(response.data)
   }
 
-  getProduct(id: number): Promise<Product> {
-    throw new Error('Method not implemented.')
+  async getProduct(id: number): Promise<Product> {
+    const urlID = `products/${id}`
+    const response = await httpClient.get(urlID)
+    return productMapper(response.data)
   }
   updateProduct(id: number, attributes: Record<string, any>): Promise<Product> {
     throw new Error('Method not implemented.')
