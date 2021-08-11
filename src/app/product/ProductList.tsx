@@ -67,7 +67,7 @@ function ProductList() {
               <tbody>
                 {productCollection && (
                   productCollection.data.map(product => (
-                    <tr>
+                    <tr key={product.id}>
                       <td>{product.id}</td>
                       <td><Link to={`products/${product.id}`}>{product.name}</Link></td>
                       <td>R$ {product.price.toFixed(2)}</td>
