@@ -13,7 +13,7 @@ export default function ButtonsPages({ productCollection, getProductsPagination 
     function calculateMaxVisible() {
         let pagesButtons = []
         const maxVisibleButtons = 7
-        let totalPages = Math.ceil(productCollection.totalRowCount / 20)
+        let totalPages = Math.ceil(productCollection.totalRowCount / productCollection.pageSize)
         let maxLeft = (productCollection.currentPage - Math.floor(maxVisibleButtons / 2))
         let maxRight = (productCollection.currentPage + Math.floor(maxVisibleButtons / 2))
 
