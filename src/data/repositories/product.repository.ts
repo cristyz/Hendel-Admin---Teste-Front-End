@@ -6,8 +6,15 @@ import { httpClient } from '../config/http-client'
 import { productCollectionMapper } from '../mappers/product.mapper'
 
 export class IProductDepository implements ProductRepositoty {
-  async getProducts(): Promise<Collection<ProductCollectionItem>> {
-    const response = await httpClient.get('products')
+  async getProducts(page: number = 1): Promise<Collection<ProductCollectionItem>> {
+
+    let urlFilterArray = [`products?page=${page}&page_size=20`]
+
+
+    // urlFilter será a junção de todos os filtros criados pelo usuário
+    let urlFilter = urlFilterArray.join('&')
+
+    const response = await httpClient.get(urlFilter)
     return productCollectionMapper(response.data)
   }
 

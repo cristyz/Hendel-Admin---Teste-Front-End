@@ -5,17 +5,28 @@ import { Collection } from '../../domain/models/collection'
 import { ProductCollectionItem } from '../../domain/models/product.model'
 import repo from '../../data/repositories/product.repository'
 
+// Components
+import Pagination from '../../components/Pagination'
+
 function ProductList() {
   const [productCollection, setProductCollection] = useState<Collection<ProductCollectionItem>>()
 
   useEffect(() => {
-    repo.getProducts().then(setProductCollection)
+    // localStore pegará a última paginação do usuário
+    repo.getProducts(parseInt(localStorage.getItem('last_page')!))
+      .then(setProductCollection)
   }, [])
+
+  function getProductsPagination(page: number) {
+    repo.getProducts(page)
+      .then(setProductCollection)
+    // Salvará a última paginação
+    localStorage.setItem('page', page.toString())
+  }
 
   return (
     <div>
       <h1 className="h3 mb-2 text-gray-800">Listagem de produtos</h1>
-
       <div className="card shadow mb-4">
         <div className="card-body p-0">
           <div className="table-responsive">
@@ -80,6 +91,7 @@ function ProductList() {
           </div>
         </div>
       </div>
+      {productCollection && <Pagination productCollection={productCollection!} getProductsPagination={getProductsPagination} />}
     </div>
   )
 }
