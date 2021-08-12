@@ -22,6 +22,7 @@ const ProductDetail = () => {
   const [removed_product_related_status, setRemovedRelatedProductStatus] = useState<string>()
   const [value_ID_for_add_related_product, setValueIDForAddProductRelated] = useState<number>()
   const [error_status, setErrorStatus] = useState<string>()
+  const [disable_button, setDisableButton] = useState<boolean>(false)
 
   const { id } = useParams<IParams>()
 
@@ -54,19 +55,31 @@ const ProductDetail = () => {
     },
     AddProductOfRelateds(event: React.FormEvent) {
       event.preventDefault()
+      setDisableButton(true)
       setRemovedRelatedProductStatus('')
+
       // Verifica se o campo de input está vazio
-      if (!value_ID_for_add_related_product) return setAddRelatedProductStatus('Digite um ID para adicionar um produto aos relacionados')
+      if (!value_ID_for_add_related_product) {
+        setDisableButton(false)
+        return setAddRelatedProductStatus('Digite um ID para adicionar um produto aos relacionados')
+      }
+
       // Verifica se o produto já está na lista de produtos relacionados
       for (const item of products_relateds!) {
-        if (item.id === value_ID_for_add_related_product) return setAddRelatedProductStatus('Produto já está nos relacionados')
+        if (item.id === value_ID_for_add_related_product) {
+          setDisableButton(false)
+          return setAddRelatedProductStatus('Produto já está nos relacionados')
+        }
       }
+
       // Adiciona o produto a lista de produtos relacionados
       repo.addRelatedProduct(productDetail!.id, value_ID_for_add_related_product!)
         .then(data => {
-          setAddRelatedProductStatus('Adicionado com sucesso')
           setProductsRelateds(products_relateds?.concat(data))
+          setAddRelatedProductStatus('Adicionado com sucesso')
+          setDisableButton(false)
         }).catch(() => {
+          setDisableButton(false)
           setAddRelatedProductStatus('ID do produto não encontrado')
         })
     },
@@ -86,33 +99,29 @@ const ProductDetail = () => {
         <h1 className="my-3 ">Última atualização: {productDetail.updatedAt.toLocaleDateString()}</h1>
         <h1 className="my-3 ">Públicado em: {productDetail.createdAt.toLocaleDateString()}</h1>
       </div>
-      {/* ------------------------------------------------------------------------ */}
-      <div className="border-bottom">
+      <div className="border-bottom mt-5">
         <h1>Produtos Relacionados</h1>
         <div className="d-flex flex-wrap">
           {products_relateds &&
             products_relateds.length > 0 ?
-            products_relateds?.map((item) => <CardProduct key={item.id} ServicesRelatedsProducts={ServicesRelatedsProducts} item={item} productDetail={productDetail} />)
+            products_relateds.map((item) => <CardProduct key={item.id} ServicesRelatedsProducts={ServicesRelatedsProducts} item={item} productDetail={productDetail} />)
             : <text className="my-4">Nenhum produto relacionado</text>}
         </div>
         {removed_product_related_status}
       </div>
-      {/* ------------------------------------------------------------------------ */}
-      <div>
+      <Form className="mt-5" onSubmit={event => ServicesRelatedsProducts.AddProductOfRelateds(event)}>
         <h1>Adicionar produto aos relacionados</h1>
-        <Form onSubmit={event => ServicesRelatedsProducts.AddProductOfRelateds(event)}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>ID do produto:</Form.Label>
-            <Form.Control type="number" onChange={handleValueInput} />
-            <Form.Text className="text-muted">
-              {add_product_related_status}
-            </Form.Text>
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Adicionar
-          </Button>
-        </Form>
-      </div>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>ID do produto:</Form.Label>
+          <Form.Control type="number" onChange={handleValueInput} />
+          <Form.Text className="text-muted">
+            {add_product_related_status}
+          </Form.Text>
+        </Form.Group>
+        <Button disabled={disable_button} variant="primary" type="submit">
+          {disable_button ? 'Aguarde' : 'Adicionar'}
+        </Button>
+      </Form>
     </div>
   )
 
