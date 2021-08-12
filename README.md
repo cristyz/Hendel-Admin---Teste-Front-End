@@ -5,12 +5,12 @@ O objetivo deste mini projeto é implementar tarefas adicionais ao admin em reac
 ![img](screenshot.png)
 
 ### Tarefas:
-1. Adicionar paginação a listagem de produtos (manter a paginação após reload da página)
-2. Permitir filtra a listagem de produtos com base nos campos de busca disponíveis
-3. Exibir todas as informações do produto na página de Detalhes do produto
-4. Exibir um "loading" no carregamento das páginas
-5. Permitir adicionar e remover Produtos relacionados na página de detalhes do produto
-6. Previnir requisições duplicadas ao adicionar ou remover um produto relacionado. Ex: O usuário clica de enviar um formulário e antes da requisição terminar ele clica novamente.
+1. Adicionar paginação a listagem de produtos (manter a paginação após reload da página) ✅
+2. Permitir filtra a listagem de produtos com base nos campos de busca disponíveis ✅
+3. Exibir todas as informações do produto na página de Detalhes do produto ✅
+4. Exibir um "loading" no carregamento das páginas ✅
+5. Permitir adicionar e remover Produtos relacionados na página de detalhes do produto ✅
+6. Previnir requisições duplicadas ao adicionar ou remover um produto relacionado. Ex: O usuário clica de enviar um formulário e antes da requisição terminar ele clica novamente. ✅
 
 ### Rodando o projeto
 
