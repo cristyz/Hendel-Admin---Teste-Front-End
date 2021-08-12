@@ -7,6 +7,7 @@ import repo from '../../data/repositories/product.repository'
 
 // Components
 import Pagination from '../../components/Pagination'
+import LoadingComponent from '../../components/LoadingComponent'
 
 // Interfaces
 import { ProductFilter } from '../../domain/models/product.filter.model'
@@ -71,78 +72,81 @@ function ProductList() {
     setFilter(initial_filter)
   }
 
-  return (
-    <div>
-      <div className="mb-2 d-flex justify-content-between">
-        <h1 className="h3 text-gray-800">Listagem de produtos</h1>
-        <div>
-          <button onClick={handleClearFilters} className="btn btn-danger mr-3">Limpar filtros</button>
-          <button onClick={() => getProductsPagination()} className="btn btn-primary">Filtrar</button>
+  if (productCollection) {
+    return (
+      <div>
+        <div className="mb-2 d-flex justify-content-between">
+          <h1 className="h3 text-gray-800">Listagem de produtos</h1>
+          <div>
+            <button onClick={handleClearFilters} className="btn btn-danger mr-3">Limpar filtros</button>
+            <button onClick={() => getProductsPagination()} className="btn btn-primary">Filtrar</button>
+          </div>
         </div>
-      </div>
-      <div className="card shadow mb-4">
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-bordered" width="100%">
-              <thead className="card-header py-3">
-                <tr>
-                  <th style={{ width: '120px' }}>ID</th>
-                  <th>Nome</th>
-                  <th style={{ width: '200px' }}>Preço</th>
-                  <th style={{ width: '200px' }}>Quantidade</th>
-                </tr>
-                <tr>
-                  <th className='py-1'>
-                    <Form.Control size='sm' name="id" value={filter.id || ''} onChange={handleSetFilter} />
-                  </th>
-                  <th className='py-1'>
-                    <Form.Control size='sm' name="name" value={filter.name || ''} onChange={handleSetFilter} />
-                  </th>
-                  <th className='py-1'>
-                    <InputGroup>
-                      <InputGroup.Prepend>
-                        <Form.Control as='select' size='sm' name="filter_price" value={filter.filter_price} onChange={handleSetFilter} >
-                          {conditions.map((item, index) => (
-                            <option value={item.name} key={index}>{item.item}</option>
-                          ))}
-                        </Form.Control>
-                      </InputGroup.Prepend>
-                      <Form.Control size='sm' name="value_price" value={filter.value_price || ''} onChange={handleSetFilter} />
-                    </InputGroup>
-                  </th>
-                  <th className='py-1'>
-                    <InputGroup>
-                      <InputGroup.Prepend>
-                        <Form.Control as='select' size='sm' name="filter_quantity" value={filter.filter_quantity} onChange={handleSetFilter}>
-                          {conditions.map((item, index) => (
-                            <option value={item.name} key={index}>{item.item}</option>
-                          ))}
-                        </Form.Control>
-                      </InputGroup.Prepend>
-                      <Form.Control size='sm' name="value_quantity" value={filter.value_quantity || ''} onChange={handleSetFilter} />
-                    </InputGroup>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {productCollection && (
-                  productCollection.data.map(product => (
+        <div className="card shadow mb-4">
+          <div className="card-body p-0">
+            <div className="table-responsive">
+              <table className="table table-bordered" width="100%">
+                <thead className="card-header py-3">
+                  <tr>
+                    <th style={{ width: '120px' }}>ID</th>
+                    <th>Nome</th>
+                    <th style={{ width: '200px' }}>Preço</th>
+                    <th style={{ width: '200px' }}>Quantidade</th>
+                  </tr>
+                  <tr>
+                    <th className='py-1'>
+                      <Form.Control size='sm' name="id" value={filter.id || ''} onChange={handleSetFilter} />
+                    </th>
+                    <th className='py-1'>
+                      <Form.Control size='sm' name="name" value={filter.name || ''} onChange={handleSetFilter} />
+                    </th>
+                    <th className='py-1'>
+                      <InputGroup>
+                        <InputGroup.Prepend>
+                          <Form.Control as='select' size='sm' name="filter_price" value={filter.filter_price} onChange={handleSetFilter} >
+                            {conditions.map((item, index) => (
+                              <option value={item.name} key={index}>{item.item}</option>
+                            ))}
+                          </Form.Control>
+                        </InputGroup.Prepend>
+                        <Form.Control size='sm' name="value_price" value={filter.value_price || ''} onChange={handleSetFilter} />
+                      </InputGroup>
+                    </th>
+                    <th className='py-1'>
+                      <InputGroup>
+                        <InputGroup.Prepend>
+                          <Form.Control as='select' size='sm' name="filter_quantity" value={filter.filter_quantity} onChange={handleSetFilter}>
+                            {conditions.map((item, index) => (
+                              <option value={item.name} key={index}>{item.item}</option>
+                            ))}
+                          </Form.Control>
+                        </InputGroup.Prepend>
+                        <Form.Control size='sm' name="value_quantity" value={filter.value_quantity || ''} onChange={handleSetFilter} />
+                      </InputGroup>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {productCollection.data.map(product => (
                     <tr key={product.id}>
                       <td>{product.id}</td>
                       <td><Link to={`products/${product.id}`}>{product.name}</Link></td>
                       <td>R$ {product.price.toFixed(2)}</td>
                       <td>{product.quantity}</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
+        <Pagination productCollection={productCollection!} getProductsPagination={getProductsPagination} />
       </div>
-      {productCollection && <Pagination productCollection={productCollection!} getProductsPagination={getProductsPagination} />}
-    </div>
-  )
+    )
+  }
+
+  return <LoadingComponent />
+
 }
 
 export default ProductList
