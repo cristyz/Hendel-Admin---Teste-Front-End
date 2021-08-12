@@ -17,6 +17,7 @@ interface IParams {
 const ProductDetail = () => {
   const [productDetail, setProductDetail] = useState<Product>()
   // O state "products_relateds" servirá para mostrar os produtos relacionados sem precisar fazer um nova requisição após adicionar ou remover um produto
+  // Evitando assim sobre carga no sevidor e chamadas desnecessárias
   const [products_relateds, setProductsRelateds] = useState<RelatedProduct[]>()
   const [add_product_related_status, setAddRelatedProductStatus] = useState<string>()
   const [removed_product_related_status, setRemovedRelatedProductStatus] = useState<string>()
@@ -82,9 +83,7 @@ const ProductDetail = () => {
           setDisableButton(false)
           setAddRelatedProductStatus('ID do produto não encontrado')
         })
-    },
-    setRemovedRelatedProductStatus,
-    setAddRelatedProductStatus
+    }
   }
 
   if (productDetail) return (
@@ -109,7 +108,7 @@ const ProductDetail = () => {
         </div>
         {removed_product_related_status}
       </div>
-      <Form className="mt-5" onSubmit={event => ServicesRelatedsProducts.AddProductOfRelateds(event)}>
+      <Form className="my-5" onSubmit={event => ServicesRelatedsProducts.AddProductOfRelateds(event)}>
         <h1>Adicionar produto aos relacionados</h1>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>ID do produto:</Form.Label>
