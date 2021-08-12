@@ -12,6 +12,9 @@ import LoadingComponent from '../../components/LoadingComponent'
 // Interfaces
 import { ProductFilter } from '../../domain/models/product.filter.model'
 
+// Store
+import { useGetter, useMutation } from 'vuex-but-for-react'
+
 function ProductList() {
   const [productCollection, setProductCollection] = useState<Collection<ProductCollectionItem>>()
   const [filter, setFilter] = useState<ProductFilter>({
@@ -23,6 +26,9 @@ function ProductList() {
     value_quantity: undefined
   })
 
+  const DataStoreProducts: Array<Collection<ProductCollectionItem>> = useGetter('dataProducts')
+  const RefreshDataProducts = useMutation('REFRESH_DATA_PRODUCTS')
+
   const conditions = [
     { item: '=', name: "_eq" },
     { item: '<>', name: "_not_eq" },
@@ -32,7 +38,7 @@ function ProductList() {
     { item: '<=', name: "_lteq" }
   ]
 
-  const initial_filter = {
+  const initial_filter: ProductFilter = {
     id: undefined,
     name: "",
     filter_price: "_eq",
@@ -45,15 +51,27 @@ function ProductList() {
     // localStore pegará a última paginação do usuário
     // OBS: caso não haja localStorage o valor default será 1
     repo.getProducts(parseInt(localStorage.getItem('last_page')!), {} as ProductFilter)
-      .then(setProductCollection)
-  }, [])
+      .then(data => {
+        setProductCollection(data)
+        RefreshDataProducts(data)
+      })
+  }, [RefreshDataProducts])
 
   function getProductsPagination(page: number = 1) {
+
+    // Se não houver filtro, fará a busca no StateGlobal
+    if (filter.id === undefined && filter.name === "" && filter.filter_price === "_eq" && filter.filter_quantity === "_eq" && filter.value_price === undefined && filter.value_quantity === undefined) {
+      for (const item of DataStoreProducts) {
+        if (item.currentPage === page) return setProductCollection(item)
+      }
+    }
+
     repo.getProducts(page, filter)
       .then(data => {
         // Verificação para caso o usuário tenha feito uma busca com filtros em uma pagina que não conterá resultados 
         if (data.totalRowCount === undefined) return getProductsPagination()
         setProductCollection(data)
+        RefreshDataProducts(data)
       })
     // Salvará a última paginação
     localStorage.setItem('last_page', page.toString())
