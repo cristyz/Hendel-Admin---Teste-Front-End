@@ -1,3 +1,14 @@
+# Adicionado:
+### State Global:
+Com ele, a aplicação armazena os dados da listagem de produtos pegos na primeira requisição a uma página...
+Se a mesma página for acessada novamente, ao invés de fazer uma nova requisição ao servidor, ela buscará os dados no armazenamento global
+
+### Pros:
+Evita sobre carga no servidor
+### Contra:
+Caso algum produto seja adicionado, será necessário recarregar a pagina para vê-lo na listagem (Caso a página já tenha sido carregada antes da adição )
+
+
 # Mini Projeto Vaga FrontEnd ReactJS
 
 O objetivo deste mini projeto é implementar tarefas adicionais ao admin em react deste repositório, que consiste em gerenciar o catálogo de produtos de um e-commerce.
