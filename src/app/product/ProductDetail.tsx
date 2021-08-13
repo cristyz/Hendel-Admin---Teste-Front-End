@@ -17,6 +17,7 @@ interface IParams {
 const ProductDetail = () => {
   const [productDetail, setProductDetail] = useState<Product>()
   // O state "products_relateds" servirá para mostrar os produtos relacionados sem precisar fazer um nova requisição após adicionar ou remover um produto
+  // Evitando assim sobre carga no sevidor e chamadas desnecessárias
   const [products_relateds, setProductsRelateds] = useState<RelatedProduct[]>()
   const [add_product_related_status, setAddRelatedProductStatus] = useState<string>()
   const [removed_product_related_status, setRemovedRelatedProductStatus] = useState<string>()
@@ -39,6 +40,15 @@ const ProductDetail = () => {
 
   function handleValueInput(event: React.ChangeEvent<HTMLInputElement>) {
     setValueIDForAddProductRelated(parseInt(event.target.value))
+  }
+
+  function handleFormatDate(date: Date) {
+    let day = date.getDate().toString()
+    let dayF = (day.length === 1) ? `0${day}` : day
+    let month = (date.getMonth() + 1).toString() //+1 pois no getMonth Janeiro começa com zero.
+    let monthF = (month.length === 1) ? `0${month}` : month
+    let yearF = date.getFullYear()
+    return `${dayF}/${monthF}/${yearF}`
   }
 
   const ServicesRelatedsProducts: IServicesRelatedsProdcts = {
@@ -82,9 +92,7 @@ const ProductDetail = () => {
           setDisableButton(false)
           setAddRelatedProductStatus('ID do produto não encontrado')
         })
-    },
-    setRemovedRelatedProductStatus,
-    setAddRelatedProductStatus
+    }
   }
 
   if (productDetail) return (
@@ -93,11 +101,11 @@ const ProductDetail = () => {
         <h1 className="text-uppercase">Detalhes do produto</h1>
         <h1 className="my-3 ">ID: {productDetail.id}</h1>
         <h1 className="my-3 ">Nome: {productDetail.name}</h1>
-        <h1 className="my-3 ">Preço: {productDetail.price}</h1>
-        <h1 className="my-3 ">Quantidade: {productDetail.quantity}</h1>
-        <h1 className="my-3 ">Descrição: {productDetail.description}</h1>
-        <h1 className="my-3 ">Última atualização: {productDetail.updatedAt.toLocaleDateString()}</h1>
-        <h1 className="my-3 ">Públicado em: {productDetail.createdAt.toLocaleDateString()}</h1>
+        <h3 className="my-3 ">Preço: {productDetail.price}</h3>
+        <h3 className="my-3 ">Quantidade: {productDetail.quantity}</h3>
+        <h3 className="my-3 ">Descrição: {productDetail.description}</h3>
+        <h3 className="my-3 ">Última atualização: {handleFormatDate(productDetail.updatedAt)}</h3>
+        <h3 className="my-3 ">Públicado em: {handleFormatDate(productDetail.createdAt)}</h3>
       </div>
       <div className="border-bottom mt-5">
         <h1>Produtos Relacionados</h1>
@@ -109,7 +117,7 @@ const ProductDetail = () => {
         </div>
         {removed_product_related_status}
       </div>
-      <Form className="mt-5" onSubmit={event => ServicesRelatedsProducts.AddProductOfRelateds(event)}>
+      <Form className="my-5" onSubmit={event => ServicesRelatedsProducts.AddProductOfRelateds(event)}>
         <h1>Adicionar produto aos relacionados</h1>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>ID do produto:</Form.Label>
