@@ -42,6 +42,16 @@ const ProductDetail = () => {
     setValueIDForAddProductRelated(parseInt(event.target.value))
   }
 
+  function handleFormatDate(data: Date) {
+    let day = data.getDate().toString()
+    let dayF = (day.length === 1) ? `0${day}` : day
+    let month = (data.getMonth() + 1).toString() //+1 pois no getMonth Janeiro começa com zero.
+    let monthF = (month.length === 1) ? `0${month}` : month
+    let yearF = data.getFullYear()
+    return `${dayF}/${monthF}/${yearF}`
+  }
+
+
   const ServicesRelatedsProducts: IServicesRelatedsProdcts = {
     RemoveProductOfRelateds(productDetailID: number, itemID: number) {
       repo.removeRelatedProduct(productDetail!.id, itemID)
@@ -95,8 +105,8 @@ const ProductDetail = () => {
         <h1 className="my-3 ">Preço: {productDetail.price}</h1>
         <h1 className="my-3 ">Quantidade: {productDetail.quantity}</h1>
         <h1 className="my-3 ">Descrição: {productDetail.description}</h1>
-        <h1 className="my-3 ">Última atualização: {productDetail.updatedAt.toLocaleDateString()}</h1>
-        <h1 className="my-3 ">Públicado em: {productDetail.createdAt.toLocaleDateString()}</h1>
+        <h1 className="my-3 ">Última atualização: {handleFormatDate(productDetail.updatedAt)}</h1>
+        <h1 className="my-3 ">Públicado em: {handleFormatDate(productDetail.createdAt)}</h1>
       </div>
       <div className="border-bottom mt-5">
         <h1>Produtos Relacionados</h1>
@@ -104,7 +114,7 @@ const ProductDetail = () => {
           {products_relateds &&
             products_relateds.length > 0 ?
             products_relateds.map((item) => <CardProduct key={item.id} ServicesRelatedsProducts={ServicesRelatedsProducts} item={item} productDetail={productDetail} />)
-            : <text className="my-4">Nenhum produto relacionado</text>}
+            : <p className="my-4">Nenhum produto relacionado</p>}
         </div>
         {removed_product_related_status}
       </div>
