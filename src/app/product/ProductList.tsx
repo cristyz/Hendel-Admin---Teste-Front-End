@@ -14,6 +14,7 @@ import { ProductFilter } from '../../domain/models/product.filter.model'
 
 function ProductList() {
   const [productCollection, setProductCollection] = useState<Collection<ProductCollectionItem>>()
+  const [status_products, setStatusProducts] = useState<string>()
   const [filter, setFilter] = useState<ProductFilter>({
     id: undefined,
     name: "",
@@ -52,7 +53,7 @@ function ProductList() {
     repo.getProducts(page, filter)
       .then(data => {
         // Verificação para caso o usuário tenha feito uma busca com filtros em uma pagina que não conterá resultados 
-        if (data.totalRowCount === undefined) return getProductsPagination()
+        if (data.totalRowCount === undefined) return setStatusProducts('Nenhum resultado encontrado')
         setProductCollection(data)
       })
     // Salvará a última paginação
@@ -69,6 +70,7 @@ function ProductList() {
   }
   // Limpa o state dos filtros
   function handleClearFilters() {
+    setStatusProducts('')
     setFilter(initial_filter)
   }
 
@@ -82,6 +84,7 @@ function ProductList() {
             <button onClick={() => getProductsPagination()} className="btn btn-primary">Filtrar</button>
           </div>
         </div>
+        {status_products}
         <div className="card shadow mb-4">
           <div className="card-body p-0">
             <div className="table-responsive">

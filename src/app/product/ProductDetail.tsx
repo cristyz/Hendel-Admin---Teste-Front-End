@@ -43,12 +43,14 @@ const ProductDetail = () => {
   }
 
   function handleFormatDate(date: Date) {
+    let minutes = date.getMinutes()
+    let hour = date.getHours()
     let day = date.getDate().toString()
     let dayF = (day.length === 1) ? `0${day}` : day
     let month = (date.getMonth() + 1).toString() //+1 pois no getMonth Janeiro começa com zero.
     let monthF = (month.length === 1) ? `0${month}` : month
     let yearF = date.getFullYear()
-    return `${dayF}/${monthF}/${yearF}`
+    return `${dayF}/${monthF}/${yearF} às ${hour}:${minutes}`
   }
 
   const ServicesRelatedsProducts: IServicesRelatedsProdcts = {
@@ -113,7 +115,7 @@ const ProductDetail = () => {
           {products_relateds &&
             products_relateds.length > 0 ?
             products_relateds.map((item) => <CardProduct key={item.id} ServicesRelatedsProducts={ServicesRelatedsProducts} item={item} productDetail={productDetail} />)
-            : <text className="my-4">Nenhum produto relacionado</text>}
+            : <p className="my-4">Nenhum produto relacionado</p>}
         </div>
         {removed_product_related_status}
       </div>
